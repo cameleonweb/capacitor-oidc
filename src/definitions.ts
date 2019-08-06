@@ -19,7 +19,7 @@ export interface OAuth2ClientPlugin {
     logout(options: OAuth2AuthenticateOptions): Promise<void>;
 }
 
-type ResponseTypeType = "token" | "code";
+type ResponseTypeType = "token" | "code" | "token id_token";
 
 export interface OAuth2AuthenticateOptions {
     /**

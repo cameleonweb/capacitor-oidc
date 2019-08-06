@@ -27,7 +27,7 @@ export class OAuth2ClientPluginWeb extends WebPlugin implements OAuth2ClientPlug
                 reject(new Error("ERR_PARAM_NO_AUTHORIZATION_BASE_URL"));
             } else if (!this.webOptions.redirectUrl) {
                 reject(new Error("ERR_PARAM_NO_REDIRECT_URL"));
-            } else if ("code" !== this.webOptions.responseType && "token" !== this.webOptions.responseType) {
+            } else if ("code" !== this.webOptions.responseType && "token" !== this.webOptions.responseType && "token id_token" !== this.webOptions.responseType) {
                 reject(new Error("ERR_PARAM_INVALID_RESPONSE_TYPE"));
             } else {
                 let loopCount = this.loopCount;
@@ -56,6 +56,20 @@ export class OAuth2ClientPluginWeb extends WebPlugin implements OAuth2ClientPlug
                                 clearInterval(this.intervalId);
                                 // check state
                                 if (urlParamObj.state === this.webOptions.state) {
+                                    if (this.webOptions.responseType === "token id_token") {
+                                        // implicit flow
+                                        let accessToken = urlParamObj.access_token;
+                                        let idToken = urlParamObj.id_token;
+                                        if (accessToken) {
+                                            let tokenObj = { access_token: accessToken, id_token: idToken };
+                                            this.requestResource(tokenObj, resolve, reject);
+                                        }
+                                        else {
+                                            reject(new Error("ERR_NO_ACCESS_TOKEN"));
+                                            this.closeWindow();
+                                        }
+                                    }
+                                    else if (urlParamObj.state === this.webOptions.state) {
                                     if (this.webOptions.responseType === "token") {
                                         // implicit flow
                                         let accessToken = urlParamObj.access_token;
