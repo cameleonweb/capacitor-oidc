@@ -68,9 +68,7 @@ export class OAuth2ClientPluginWeb extends WebPlugin implements OAuth2ClientPlug
                                             reject(new Error("ERR_NO_ACCESS_TOKEN"));
                                             this.closeWindow();
                                         }
-                                    }
-                                    else if (urlParamObj.state === this.webOptions.state) {
-                                    if (this.webOptions.responseType === "token") {
+                                    } else if (this.webOptions.responseType === "token") {
                                         // implicit flow
                                         let accessToken = urlParamObj.access_token;
                                         if (accessToken) {
